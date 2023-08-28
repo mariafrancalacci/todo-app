@@ -7,21 +7,24 @@
 
       <template v-if="editing">
         <input
-        type="text"
-        v-model="task.text"
-      />
-      <input
-      v-if="editing"
-      type="date"
-      v-model="task.dueDate"
-    />
-      <button @click="saveEdit">Save</button>
-      <button @click="cancelEdit">Cancel</button>
+          type="text"
+          v-model="task.text"
+        />
+        <input
+          v-if="editing"
+          type="date"
+          v-model="task.dueDate"
+        />
+        <button @click="saveEdit">Save</button>
+        <button @click="cancelEdit">Cancel</button>
      </template>
-    <template v-else>
-      <p  :class="task.isCompleted ? 'text-gray-300 line-through text-sm leading-[1.18rem] mr-auto' : 'text-sm leading-[1.18rem] text-gray-100 mr-auto'" >
-        {{ task.text }}
-      </p>
+     <template v-else>
+        <p 
+          :class="[ task.isCompleted ? 'text-gray-300 line-through text-sm leading-[1.18rem] mr-auto' : 'text-sm leading-[1.18rem] text-gray-100 mr-auto',
+          isOverdue() && !task.isCompleted ? 'text-red-500' : '']"
+          >
+          {{ task.text }}
+        </p>
     </template>
       
       <div class="flex items-center gap-1">
@@ -60,10 +63,10 @@ export default Vue.extend({
       if (this.task.text.trim() !== '') {
         this.editTodo(this.task);
         this.editing = false;
-    }
+      }
     },
     handleTodoComplete() {
-      this.toggleTodo(this.task.id); 
+      this.toggleTodo(this.task.id);
     },
     handleRemove(id: number) {
       this.removeTodo(id);
@@ -77,9 +80,17 @@ export default Vue.extend({
       }
       return '';
     },
+    isOverdue(): boolean {
+      if (this.task.dueDate && !this.task.isCompleted) {
+        const today = dayjs();
+        const dueDate = dayjs(this.task.dueDate);
+        return dueDate.isBefore(today, 'day');
+      }
+      return false;
+    },
   },
   computed: {
-    ...mapState('todos', ['tasks'])
+    ...mapState('todos', ['tasks']),
   },
 });
 </script>
