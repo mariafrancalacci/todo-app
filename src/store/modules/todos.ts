@@ -2,7 +2,7 @@ import type { Module } from 'vuex';
 import type { RootState } from './index';
 
 export interface Task {
-  id: number;
+  id: string;
   text: string;
   isCompleted: boolean;
   dueDate: Date | null;
@@ -10,26 +10,21 @@ export interface Task {
 
 interface TodosState {
   tasks: Task[];
-  nextTaskId: number; 
 }
 
 const todosModule: Module<TodosState, RootState> = {
   namespaced: true,
   state: {
     tasks: [],
-    nextTaskId: 1,
   },
   mutations: {
     addTodo(state, task: Task) {
-      task.isCompleted = false;
-      task.id = state.nextTaskId; 
-      state.nextTaskId++; 
       state.tasks.push(task);
     },
-    removeTodo(state, id: number) {
+    removeTodo(state, id: Task['id']) {
       state.tasks = state.tasks.filter(task => task.id !== id);
     },
-    toggleTodo(state, id: number) {
+    toggleTodo(state, id: Task['id']) {
       const task = state.tasks.find(task => task.id === id);
       if (task) {
         task.isCompleted = !task.isCompleted;
