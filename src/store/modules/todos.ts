@@ -1,7 +1,7 @@
 import type { Module } from 'vuex';
 import type { RootState } from './index';
 
-interface Task {
+export interface Task {
   id: number;
   text: string;
   isCompleted: boolean;
