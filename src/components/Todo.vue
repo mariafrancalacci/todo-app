@@ -34,12 +34,23 @@
       <button class="text-gray-300 border-none" @click="startEdit" >
         <Icon icon="material-symbols:edit-outline" color="#808080" />
       </button>
-      <button @click="handleRemove(task.id)" class="text-gray-300 border-none">
+      <button @click="showModal()" class="text-gray-300 border-none">
         <Icon icon="octicon:trash-24" color="#808080" />   
       </button> 
       <button @click="multiplyTodo" class="text-gray-300 border-none">
        <Icon icon="ion:duplicate-outline" color="#808080"  />
       </button>
+
+
+      <div v-if="showDeleteModal" class="fixed inset-0 flex items-center justify-center z-50">
+      <div class=" bg-gray-500 rounded-lg p-4">
+        <p>Are you sure you want to delete this task?</p>
+        <div class="flex justify-end mt-4">
+          <button @click="unShowModal" class="text-gray-500 mr-2">Cancel</button>
+          <button @click="handleRemoveTodo" class="text-red-500">Delete</button>
+        </div>
+      </div>
+    </div>
      
   </div>
 </template>
@@ -55,6 +66,7 @@ export default Vue.extend({
   data() {
     return {
       editing: false,
+      showDeleteModal: false
     };
   },
   methods: {
@@ -68,14 +80,21 @@ export default Vue.extend({
         this.editing = false;
       }
     },
+    cancelEdit() {
+      this.editing = false;
+    },
     handleTodoComplete() {
       this.toggleTodo(this.task.id);
     },
-    handleRemove(id: number) {
-      this.removeTodo(id);
+    showModal() {
+      this.showDeleteModal = true;
     },
-    cancelEdit() {
-      this.editing = false;
+    handleRemoveTodo() {
+      this.removeTodo(this.task.id);
+      this.showDeleteModal = false;
+    },
+    unShowModal() {
+      this.showDeleteModal = false;
     },
     formatDueDate(date: Date | null): string {
       if (date) {
