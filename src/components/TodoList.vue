@@ -9,11 +9,16 @@
             </span>
           </div>
           
-          <div class="flex items-center gap-[0.8rem]">
-            <button @click="filter = 'all'">All</button>
-            <button @click="filter = 'pending'">Pending</button>
-            <button @click="filter = 'completed'">Completed</button>
-          </div>
+          <div class="relative inline-block text-gray-300">
+            <select @change="handleFilterChange" class="appearance-none bg-transparent border-none pl-3 pr-8 py-2 rounded-lg">
+              <option value="all">All</option>
+              <option value="pending">Pending</option>
+              <option value="completed">Completed</option>
+            </select>
+          <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+            <Icon icon="system-uicons:filter" color="#808080"  width="30" height="30" />
+        </div>
+      </div>
           <div class="flex items-center gap-[0.8rem]">
             <p class="text-purple">Done</p>
             <span>{{ completedTodosCount}}  of {{ tasks.length }}</span>
@@ -22,28 +27,22 @@
   
 
         <div class="flex flex-col gap-3">
-
-          <template v-if="tasks.length === 0">
-           <div class="items-center justify-center flex flex-col gap-4 text-[color:var(--gray-300)] text-center mt-16">
+        <template v-if="tasks.length === 0">
+          <div class="items-center justify-center flex flex-col gap-4 text-[color:var(--gray-300)] text-center mt-16">
             <Icon icon="clarity:list-line" color="#808080" width="40" height="40" />
             <p class="text-gray-300">You don't have any tasks registered yet.</p>
-           </div>
-          </template>
-
-          <template v-else>
-            <div class="flex flex-col gap-3">
-              <template v-if="filteredTodos.length === 0">
-                <div class="items-center justify-center flex flex-col gap-4 text-[color:var(--gray-300)] text-center mt-16">
-                  <Icon icon="clarity:list-line" color="#808080" width="40" height="40" />
-                  <p class="text-gray-300">You don't have any tasks registered yet.</p>
-                </div>
-              </template>
-              <template v-else>
-               <Todo v-for="task in filteredTodos" :key="task.id" :task="task" />
-              </template>
-            </div>
-          </template>
-       </div>
+          </div>
+        </template>
+        <template v-else-if="filteredTodos.length === 0">
+          <div class="items-center justify-center flex flex-col gap-4 text-[color:var(--gray-300)] text-center mt-16">
+            <Icon icon="ph:x-circle-light"  color="#808080" width="40" height="40" />
+            <p class="text-gray-300">You don't have completed tasks yet.</p>
+          </div>
+        </template>
+        <template v-else>
+          <Todo v-for="task in filteredTodos" :key="task.id" :task="task" />
+        </template>
+      </div>
 
       </section>
     </div>
@@ -51,7 +50,6 @@
   
   <script lang="ts">
   import Vue from 'vue';
-  import { mapState } from 'vuex';
   import Todo from '@/components/Todo.vue';
   import { Task } from '@/store/modules/todos';
   
@@ -60,31 +58,35 @@
       Todo,
     },
     data() {
-    return {
-      filter: 'all', 
-    };
-  },
+      return {
+        filter: 'all', 
+      };
+    },
     computed: {
-    tasks(): Task[] {
-      return (this.$store.state as any).todos.tasks;
+      tasks(): Task[] {
+        return (this.$store.state as any).todos.tasks;
+      },
+      filteredTodos(): Task[] {
+        const tasks = this.tasks;
+  
+        if (this.filter === 'pending') {
+          return tasks.filter((task: Task) => !task.isCompleted);
+        } else if (this.filter === 'completed') {
+          return tasks.filter((task: Task) => task.isCompleted);
+        }
+  
+        return tasks;
+      },
+      completedTodosCount(): number {
+        const tasks = this.tasks;
+        const completedTodos = tasks.filter((task: Task) => task.isCompleted);
+        return completedTodos.length;
+      },
     },
-    filteredTodos(): Task[] {
-      const tasks = this.tasks;
-
-      if (this.filter === 'pending') {
-        return tasks.filter((task: Task) => !task.isCompleted);
-      } else if (this.filter === 'completed') {
-        return tasks.filter((task: Task) => task.isCompleted);
-      }
-
-      return tasks;
+    methods: {
+      handleFilterChange(event: any) {
+        this.filter = event.target.value;
+      },
     },
-    completedTodosCount(): number {
-      const tasks = this.tasks;
-      const completedTodos = tasks.filter((task: Task) => task.isCompleted);
-      return completedTodos.length;
-    },
-  },
   });
   </script>
-  
