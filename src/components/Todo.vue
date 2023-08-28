@@ -37,6 +37,9 @@
       <button @click="handleRemove(task.id)" class="text-gray-300 border-none">
         <Icon icon="octicon:trash-24" color="#808080" />   
       </button> 
+      <button @click="multiplyTodo" class="text-gray-300 border-none">
+       <Icon icon="ion:duplicate-outline" color="#808080"  />
+      </button>
      
   </div>
 </template>
@@ -55,7 +58,7 @@ export default Vue.extend({
     };
   },
   methods: {
-    ...mapActions('todos', ['removeTodo', 'editTodo', 'toggleTodo']),
+    ...mapActions('todos', ['removeTodo', 'editTodo', 'toggleTodo', 'addTodo']),
     startEdit() {
       this.editing = true;
     },
@@ -87,6 +90,15 @@ export default Vue.extend({
         return dueDate.isBefore(today, 'day');
       }
       return false;
+    },
+    multiplyTodo() {
+      const duplicatedTodo = {
+        ...this.task,
+        text: this.task.text,
+        id: Date.now(),
+      };
+
+      this.addTodo(duplicatedTodo);
     },
   },
   computed: {
