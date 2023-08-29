@@ -5,10 +5,10 @@
       class="absolute h-[3.375rem] bottom-[calc(-3.375rem_/_2)] w-full max-w-[46rem] flex gap-2 px-4 py-0 justify-between">
       <div class="flex gap-2">
         <input type="text" v-model="newTodoText" placeholder="Enter a new task" data-testid="new-todo-title"
-          class="h-full w-[430px] placeholder-gray-300 text-gray-100 border text-base px-4 py-0 rounded-lg border-solid border-gray-700 bg-gray-500" />
+          :class="[isFailure && newTodoText.length === 0 ? 'h-full w-[430px] placeholder-gray-300 text-gray-100 border text-base px-4 py-0 rounded-lg border-solid border-red-800 bg-gray-500' : 'h-full w-[430px] placeholder-gray-300 text-gray-100 border text-base px-4 py-0 rounded-lg border-solid border-gray-700 bg-gray-500']" />
 
         <input type="date" v-model="newTodoDueDate" data-testid="new-todo-date"
-          class="h-full w-[160px] text-gray-300 border text-base px-4 py-0 rounded-lg border-solid border-gray-700 bg-gray-500" />
+          :class="[isFailure && newTodoDueDate.length === 0 ? 'h-full w-[160px] text-gray-300 border text-base px-4 py-0 rounded-lg border-solid border-red-800 bg-gray-500' : 'h-full w-[160px] text-gray-300 border text-base px-4 py-0 rounded-lg border-solid border-gray-700 bg-gray-500']" />
       </div>
 
       <button data-testid="new-todo-submit"
@@ -32,22 +32,28 @@ export default Vue.extend({
     return {
       newTodoText: '',
       newTodoDueDate: '',
+      isFailure: false
     };
   },
   methods: {
     ...mapActions('todos', ['addTodo']),
     createTodo() {
-      if (this.newTodoText.trim() !== '' && this.newTodoDueDate) {
+      if (this.newTodoText.trim() !== '' && this.newTodoDueDate !== '') {
         const newTask: Task = {
           id: uuid.v4(),
           text: this.newTodoText,
           isCompleted: false,
           dueDate: new Date(this.newTodoDueDate),
         };
+        this.isFailure = false;
         this.addTodo(newTask);
         this.newTodoText = '';
         this.newTodoDueDate = '';
+      } else {
+        this.isFailure = true
       }
+
+
     }
   },
 })

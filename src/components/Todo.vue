@@ -1,6 +1,6 @@
 <template>
   <div
-    class="w-full border bg-gray-500 border-gray-400 flex items-center justify-between gap-3 p-4 rounded-lg border-solid">
+    class="w-full border bg-gray-500 border-gray-400 flex items-center justify-between gap-3 p-[1rem] rounded-lg border-solid">
 
     <button data-testid="complete-todo-button" :data-checked="task.isCompleted"
       class="w-[1.125rem] h-[1.125rem] border-none bg-none" @click="handleTodoComplete">
@@ -8,11 +8,22 @@
         :color="task.isCompleted ? '#5e60ce' : '#4ea8de'" />
     </button>
 
-    <template v-if="editing">
-      <input type="text" v-model="task.text" data-testid="edit-todo-title" />
-      <input v-if="editing" type="date" v-model="task.dueDate" data-testid="edit-todo-date" />
-      <button data-testid="edit-todo-confirm-button" @click="saveEdit">Save</button>
-      <button @click="cancelEdit">Cancel</button>
+    <template v-if="editing" class="flex p-[0.5rem]">
+      <input type="text" v-model="task.text" data-testid="edit-todo-title"
+        :class="[isTitleEmpty ? 'border-solid border border-red-800  text-gray-100 text-base px-4 py-0 rounded-lg bg-gray-500' : ' placeholder-gray-300 text-gray-100 text-base px-4 py-0 rounded-lg bg-gray-500']" />
+
+      <input v-if="editing" type="date" v-model="task.dueDate" data-testid="edit-todo-date"
+        class="text-gray-300  text-sm border py-1 pl-1 rounded-lg border-solid border-gray-700 bg-gray-500" />
+
+      <div class="pl-0 flex gap-2">
+        <button data-testid="edit-todo-confirm-button"
+          class="text-sm  border-green-700 rounded-lg border py-1 px-1 border-solid " @click="saveEdit">
+          Save
+        </button>
+
+        <button class="text-sm rounded-lg border py-1 px-1 border-solid border-red-700"
+          @click="cancelEdit">Cancel</button>
+      </div>
     </template>
     <template v-else>
       <p data-testid="todo-element" :class="[task.isCompleted ? 'text-gray-300 line-through text-sm leading-[1.18rem] mr-auto' : 'text-sm leading-[1.18rem] text-gray-100 mr-auto',
@@ -21,7 +32,7 @@
       </p>
     </template>
 
-    <div class="flex items-center gap-1">
+    <div :class="[editing ? 'text-xs flex items-center gap-1' : 'flex items-center gap-1']">
       <Icon icon="ph:clock-light" color="#808080" width="19" height="19" />
       <span>{{ formatDueDate(task.dueDate) }}</span>
     </div>
@@ -56,27 +67,43 @@ import { Icon } from '@iconify/vue2';
 import dayjs from 'dayjs';
 import { mapActions, mapState } from 'vuex';
 import { uuid } from 'vue-uuid'
+import { Task } from '@/store/modules/todos';
 
 export default Vue.extend({
   props: ['task'],
   data() {
     return {
       editing: false,
-      showDeleteModal: false
+      showDeleteModal: false,
+      originalTask: null as Task | null,
+      isTitleEmpty: false,
     };
   },
   methods: {
     ...mapActions('todos', ['removeTodo', 'editTodo', 'toggleTodo', 'addTodo']),
     startEdit() {
       this.editing = true;
+      this.originalTask = { ...this.task };
     },
+
     saveEdit() {
       if (this.task.text.trim() !== '') {
         this.editTodo(this.task);
         this.editing = false;
+        this.isTitleEmpty = false;
+      } else {
+        this.isTitleEmpty = true;
+        console.log(this.isTitleEmpty)
       }
     },
+
     cancelEdit() {
+      if (this.originalTask) {
+        this.task.text = this.originalTask.text;
+        this.task.dueDate = this.originalTask.dueDate;
+        this.originalTask = null;
+        this.isTitleEmpty = false;
+      }
       this.editing = false;
     },
     handleTodoComplete() {
