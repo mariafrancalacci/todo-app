@@ -1,6 +1,11 @@
 // tsconfig.config.json
 {
   "compilerOptions": {
+    "types": [
+      "node",
+      "chai",
+      "jest"
+    ],
     "target": "esnext",
     "module": "esnext",
     "strict": true,
@@ -9,7 +14,9 @@
     "importHelpers": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": [
+        "src/*"
+      ]
     }
     // ... outras configurações compartilhadas ...
   }
