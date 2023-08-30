@@ -23,6 +23,7 @@
   "devDependencies": {
     "@iconify/vue2": "^2.1.0",
     "@rushstack/eslint-patch": "^1.1.0",
+    "@types/chai": "^4.3.5",
     "@types/jest": "^29.5.4",
     "@types/node": "^16.11.45",
     "@types/uuid": "^9.0.2",
