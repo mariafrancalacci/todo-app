@@ -31,7 +31,7 @@
 import Vue from 'vue';
 import { mapActions } from 'vuex';
 import { Task } from '@/store/modules/todos';
-import { uuid } from 'vue-uuid'
+import { v4 as uuidv4 } from 'uuid';
 
 export default Vue.extend({
   data() {
@@ -46,7 +46,7 @@ export default Vue.extend({
     createTodo() {
       if (this.newTodoText.trim() !== '' && this.newTodoDueDate !== '') {
         const newTask: Task = {
-          id: uuid.v4(),
+          id: uuidv4(),
           text: this.newTodoText,
           isCompleted: false,
           dueDate: new Date(this.newTodoDueDate),

@@ -80,7 +80,7 @@ import Vue from 'vue';
 import { Icon } from '@iconify/vue2';
 import dayjs from 'dayjs';
 import { mapActions, mapState } from 'vuex';
-import { uuid } from 'vue-uuid'
+import { v4 as uuidv4 } from 'uuid';
 import { Task } from '@/store/modules/todos';
 
 export default Vue.extend({
@@ -151,7 +151,7 @@ export default Vue.extend({
       const duplicatedTodo = {
         ...this.task,
         text: this.task.text,
-        id: uuid.v4(),
+        id: uuidv4()
       };
 
       this.addTodo(duplicatedTodo);
