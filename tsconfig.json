@@ -4,7 +4,8 @@
     "types": [
       "node",
       "chai",
-      "jest"
+      "jest",
+      "vite/client"
     ],
     "target": "esnext",
     "module": "esnext",
@@ -19,5 +20,8 @@
       ]
     }
     // ... outras configurações compartilhadas ...
-  }
+  },
+  "exclude": [
+    "node_modules/@types/chai",
+  ]
 }
