@@ -1,4 +1,3 @@
-// tsconfig.config.json
 {
   "compilerOptions": {
     "types": [
@@ -14,14 +13,14 @@
     "esModuleInterop": true,
     "importHelpers": true,
     "baseUrl": ".",
+    "skipLibCheck": true,
     "paths": {
       "@/*": [
         "src/*"
       ]
     }
-    // ... outras configurações compartilhadas ...
   },
   "exclude": [
-    "node_modules/@types/chai",
+    "node_modules",
   ]
 }
