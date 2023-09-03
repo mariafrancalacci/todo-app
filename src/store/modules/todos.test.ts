@@ -44,24 +44,24 @@ describe('actions', () => {
     const mockCommit = vi.fn()
     it('addTodo', () => {
 
-        actions.addTodo({ commit: mockCommit }, todo)
+        (actions as any).addTodo({ commit: mockCommit }, todo)
 
         expect(mockCommit).toHaveBeenCalledWith('addTodo', todo)
     })
     it('removeTodo', () => {
 
-        actions.removeTodo({ commit: mockCommit }, todo.id);
+        (actions as any).removeTodo({ commit: mockCommit }, todo.id);
 
         expect(mockCommit).toHaveBeenCalledWith('removeTodo', todo.id)
 
     })
     it('toggleTodo', () => {
-        actions.toggleTodo({ commit: mockCommit }, todo.id);
+        (actions as any).toggleTodo({ commit: mockCommit }, todo.id);
 
         expect(mockCommit).toHaveBeenCalledWith('toggleTodo', todo.id)
     })
     it('editTodo', () => {
-        actions.editTodo({ commit: mockCommit }, todo);
+        (actions as any).editTodo({ commit: mockCommit }, todo);
 
         expect(mockCommit).toHaveBeenCalledWith('editTodo', todo)
 
